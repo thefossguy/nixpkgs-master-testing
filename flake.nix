@@ -99,9 +99,7 @@
             PATH=${pkgs.nix}/bin:$PATH
             export PATH
 
-            ${pkgs.coreutils-full}/bin/timeout 1h \
-                ${pkgs.python3}/bin/python3 ${prathams-nixos.outPath}/scripts/nix-ci/builder.py \
-                --nixosConfigurations --homeConfigurations --devShells --packages
+            ${pkgs.python3}/bin/python3 ${prathams-nixos.outPath}/scripts/nix-ci/builder.py "$1"
           ''}";
         }
       );
