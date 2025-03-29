@@ -73,7 +73,7 @@ jobs:
 
       - name: Push build results
         run: |
-          cachix push --compression-level 19 --compression-method zstd ${{ env.CACHIX_CACHE_BUCKET_NAME }} ./result*
+          cachix push --compression-level 16 --compression-method zstd ${{ env.CACHIX_CACHE_BUCKET_NAME }} ./result*
 
   final-check:
     needs: nixpkgs-master-build
