@@ -14,7 +14,18 @@ jobs:
     steps:
       - uses: actions/checkout@main
       - uses: DeterminateSystems/nix-installer-action@main
+
+      - name: Checkout yesterday's commit for Nixpkgs
+        run: |
+          YESTERDAYS_NIXPKGS_SHA="$(curl "https://api.github.com/repos/nixos/nixpkgs/commits?until=$(date -d '-1 day' +'%Y-%m-%d')T00:00:00Z&per_page=1" 2>/dev/null | jq --raw-output '.[].sha')"
+          sed -i "s@NixOS/nixpkgs/master@NixOS/nixpkgs/${YESTERDAYS_NIXPKGS_SHA}@g" flake.nix
       - run: nix flake update
+
+      - name: Verify commit SHA in flake lockfile
+        run: |
+          YESTERDAYS_NIXPKGS_SHA="$(curl "https://api.github.com/repos/nixos/nixpkgs/commits?until=$(date -d '-1 day' +'%Y-%m-%d')T00:00:00Z&per_page=1" 2>/dev/null | jq --raw-output '.[].sha')"
+          grep "\"rev\": \"${YESTERDAYS_NIXPKGS_SHA}\"," flake.lock
+
       - uses: actions/upload-artifact@main
         with:
           name: flake-lock
